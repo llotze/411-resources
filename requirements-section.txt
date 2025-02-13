@@ -1,0 +1,48 @@
+1. Agile
+
+User Stories:
+As a vanilla Git power-user that has never seen GiggleGit before, I want to quickly understand its features so I can understand its usefulness without disrupting my existing workflow.
+
+As a team lead onboarding an experienced GiggleGit user, I want to ensure that my team follows best practices when integrating GiggleGit into our workflow so we can collaborate effectively.
+
+As a new user exploring GiggleGit for the first time, I want an interactive tutorial that walks me through the meme-based merge process so I can learn how it works an effective and straightforward way.
+
+Task for Third User Story:
+Design and implement an interactive tutorial for first-time users.
+
+Associated Tickets:
+Ticket Title: Create interactive onboarding tutorial
+Details: Develop an in-app tutorial that introduces users to the core functionalities of GiggleGit, including meme-based merging. The tutorial should be accessible upon first login and available for replay from the settings menu.
+
+Ticket Title: Implement tutorial tracking
+Details: Track user progress in the onboarding tutorial so they can resume from where they left off if they exit early. Store completion status in the users profile.
+
+Question:
+"As a user, I want to be able to authenticate on a new machine" is not a user story it is a feature request, as it simply states a feature rather than framing it in terms of the users goals or motivations for the feature.
+
+
+
+
+
+2. Formal Requirements
+
+Goal:
+Ensure SnickerSync provides a user-friendly way to review and merge code while incorporating humor to enhance the experience.
+
+Non-Goal:
+Automatically generating jokes or memes based on code content.
+
+Non-Functional Requirements:
+Access Control
+	Users should have different levels of access depending on their role (developers, PMs, testers).
+
+User Testing and Experiments
+	SnickerSync should be able to place users into different groups to test new features.
+
+Functional Requirements:
+For Access Control:
+	*Set up user roles so PMs can adjust SnickerSync settings while developers mainly use the tool.
+	*Keep a record of changes made to settings so admins can review updates if needed.
+For User Testing and Experiments:
+	*When testing new features, some users should automatically be placed in a test group while others stay in a regular group.
+	*Allow different users to see slightly different versions of SnickerSync so new features can be tested before full release.
