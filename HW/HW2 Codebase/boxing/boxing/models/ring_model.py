@@ -94,6 +94,7 @@ class RingModel:
         Raises:
             TypeError: If the boxer is not a valid Boxer instance.
             ValueError: If the ring is already full.
+            ValueError: If the boxer is already in the ring
 
         """
         logger.info("Received request to add a boxer to the ring")
@@ -105,6 +106,10 @@ class RingModel:
             logger.error(f"Could not add boxer {boxer.name} to the ring, ring is already full")
             raise ValueError("Ring is full, cannot add more boxers.")
 
+        if Ring[0].id == boxer.id:
+            logger.error(f"boxer {boxer.name} is already in the ring, cannot add again.")
+            rasie ValueError(f"Boxer with id {boxer.id} already exists in the ring")
+            
         self.ring.append(boxer)
         logger.info(f"Successfully added boxer {boxer.name} to the ring")
 

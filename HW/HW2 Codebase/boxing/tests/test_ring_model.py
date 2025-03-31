@@ -2,233 +2,118 @@ from dataclasses import asdict
 
 import pytest
 
-from playlist.models.playlist_model import PlaylistModel
-from playlist.models.song_model import Song
+from boxing.models.ring_model import RingModel
+from boxing.models.boxers_model import Boxer
 
 
 @pytest.fixture()
-def playlist_model():
-    """Fixture to provide a new instance of PlaylistModel for each test."""
-    return PlaylistModel()
+def ring_model():
+    """Fixture to provide a new instance of RingModel for each test."""
+    return RingModel()
 
 @pytest.fixture
-def mock_update_play_count(mocker):
-    """Mock the update_play_count function for testing purposes."""
-    return mocker.patch("playlist.models.playlist_model.update_play_count")
+def mock_update_boxer_stats(mocker):
+    """Mock the update_boxer_stats function for testing purposes."""
+    return mocker.patch("boxing.models.ring_model.update_boxer_stats")
 
-"""Fixtures providing sample songs for the tests."""
+"""Fixtures providing sample boxers for the tests."""
 @pytest.fixture
-def sample_song1():
-    return Song(1, 'Artist 1', 'Song 1', 2022, 'Pop', 180)
-
-@pytest.fixture
-def sample_song2():
-    return Song(2, 'Artist 2', 'Song 2', 2021, 'Rock', 155)
+def sample_boxer1():
+    return Boxer(1, 'Boxer 1', 150, 60, 12.5, 87)
 
 @pytest.fixture
-def sample_playlist(sample_song1, sample_song2):
-    return [sample_song1, sample_song2]
+def sample_boxer2():
+    return Boxer(2, 'Boxer 2', 200, 100, 10.2, 5)
+
+def sample_boxer3():
+    return Boxer(3, 'Boxer 3', 300, 200, 4.1, 2)
+
+@pytest.fixture
+def sample_ring(sample_boxer1, sample_boxer2):
+    return [sample_boxer1, sample_boxer2]
 
 
 ##################################################
-# Add / Remove Song Management Test Cases
+# Add / Remove Boxer Management Test Cases
 ##################################################
 
 
-def test_add_song_to_playlist(playlist_model, sample_song1):
-    """Test adding a song to the playlist.
+def test_enter_ring(ring_model, sample_boxer1):
+    """Test adding a boxer to the ring.
 
     """
-    playlist_model.add_song_to_playlist(sample_song1)
-    assert len(playlist_model.playlist) == 1
-    assert playlist_model.playlist[0].title == 'Song 1'
+    ring_model.enter_ring(sample_boxer1)
+    assert len(ring_model.ring) == 1
+    assert ring_model.ring[0].name == 'Boxer 1'
 
 
-def test_add_duplicate_song_to_playlist(playlist_model, sample_song1):
-    """Test error when adding a duplicate song to the playlist by ID.
-
-    """
-    playlist_model.add_song_to_playlist(sample_song1)
-    with pytest.raises(ValueError, match="Song with ID 1 already exists in the playlist"):
-        playlist_model.add_song_to_playlist(sample_song1)
-
-
-def test_add_bad_song_to_playlist(playlist_model, sample_song1):
-    """Test error when adding a duplicate song to the playlist by ID.
+def test_add_duplicate_boxer_to_ring(ring_model, sample_boxer1):
+    """Test error when adding a duplicate boxer to the ring by ID.
 
     """
-    with pytest.raises(TypeError, match="Song is not a valid Song instance"):
-        playlist_model.add_song_to_playlist(asdict(sample_song1))
+    ring_model.enter_ring(sample_boxer1)
+    with pytest.raises(ValueError, match="Boxer with ID 1 already exists in the ring"):
+        ring_model.enter_ring(sample_boxer1)
 
 
-def test_remove_song_from_playlist_by_song_id(playlist_model, sample_playlist):
-    """Test removing a song from the playlist by song_id.
-
-    """
-    playlist_model.playlist.extend(sample_playlist)
-    assert len(playlist_model.playlist) == 2
-
-    playlist_model.remove_song_by_song_id(1)
-    assert len(playlist_model.playlist) == 1, f"Expected 1 song, but got {len(playlist_model.playlist)}"
-    assert playlist_model.playlist[0].id == 2, "Expected song with id 2 to remain"
-
-
-def test_remove_song_by_track_number(playlist_model, sample_playlist):
-    """Test removing a song from the playlist by track number.
+def test_add_bad_boxer_to_ring(ring_model, sample_boxer1):
+    """Test error when adding a duplicate boxer to the ring.
 
     """
-    playlist_model.playlist.extend(sample_playlist)
-    assert len(playlist_model.playlist) == 2
+    with pytest.raises(TypeError, match=f"Invalid type: Expected 'Boxer', got {type(asdict(sample_boxer1)).__name__}"):
+        ring_model.enter_ring(asdict(sample_boxer1))
 
-    playlist_model.remove_song_by_track_number(1)
-    assert len(playlist_model.playlist) == 1, f"Expected 1 song, but got {len(playlist_model.playlist)}"
-    assert playlist_model.playlist[0].id == 2, "Expected song with id 2 to remain"
-
-
-def test_clear_playlist(playlist_model, sample_song1):
-    """Test clearing the entire playlist.
+def test_add_third_boxer_to_ring(ring_model, sample_boxer1, sample_boxer2, sample_boxer3):
+    """Test error when adding a third boxer to the ring.
 
     """
-    playlist_model.playlist.append(sample_song1)
+    ring.model.enter_ring(sample_boxer1)
+    ring.model.enter_ring(sample_boxer2)
+    with pytest.raises(TypeError, match="Ring is full, cannot add more boxers."):
+        ring_model.enter_ring(sample_boxer3)
 
-    playlist_model.clear_playlist()
-    assert len(playlist_model.playlist) == 0, "Playlist should be empty after clearing"
 
+def test_clear_ring(ring_model, sample_boxer1, sample_boxer2):
+    """Test clearing the entire ring.
+
+    """
+    ring_model.ring.append(sample_boxer1)
+
+    ring_model.clear_ring()
+    assert len(ring_model.ring) == 0, "ring should be empty after clearing"
+
+    ring_model.ring.append(sample_boxer1)
+    ring_model.ring.append(sample_boxer2)
+    ring_model.clear_ring()
+    assert len(ring_model.ring) == 0, "ring should be empty after clearing"
 
 ##################################################
-# Tracklisting Management Test Cases
+# Boxer Retrieval Test Cases
 ##################################################
 
-
-def test_move_song_to_track_number(playlist_model, sample_playlist):
-    """Test moving a song to a specific track number in the playlist.
-
-    """
-    playlist_model.playlist.extend(sample_playlist)
-
-    playlist_model.move_song_to_track_number(2, 1)  # Move Song 2 to the first position
-    assert playlist_model.playlist[0].id == 2, "Expected Song 2 to be in the first position"
-    assert playlist_model.playlist[1].id == 1, "Expected Song 1 to be in the second position"
-
-
-def test_swap_songs_in_playlist(playlist_model, sample_playlist):
-    """Test swapping the positions of two songs in the playlist.
+def test_get_boxers(ring_model, sample_ring):
+    """Test successfully retrieving all boxers from the ring.
 
     """
-    playlist_model.playlist.extend(sample_playlist)
+    ring_model.ring.extend(sample_ring)
 
-    playlist_model.swap_songs_in_playlist(1, 2)  # Swap positions of Song 1 and Song 2
-    assert playlist_model.playlist[0].id == 2, "Expected Song 2 to be in the first position"
-    assert playlist_model.playlist[1].id == 1, "Expected Song 1 to be in the second position"
+    all_boxers = ring_model.get_boxers()
+    assert len(all_boxers) == 2
+    assert all_boxers[0].id == 1
+    assert all_boxers[1].id == 2
 
-
-def test_swap_song_with_itself(playlist_model, sample_song1):
-    """Test swapping the position of a song with itself raises an error.
-
-    """
-    playlist_model.playlist.append(sample_song1)
-
-    with pytest.raises(ValueError, match="Cannot swap a song with itself"):
-        playlist_model.swap_songs_in_playlist(1, 1)  # Swap positions of Song 1 with itself
-
-
-def test_move_song_to_end(playlist_model, sample_playlist):
-    """Test moving a song to the end of the playlist.
+def test_get_boxers_empty(ring_model):
+    """Test successfully retrieving all boxers from the ring.
 
     """
-    playlist_model.playlist.extend(sample_playlist)
+    with pytest.raises(ValueError, match="Ring is empty"):
+        ring_model.get_boxers()
 
-    playlist_model.move_song_to_end(1)  # Move Song 1 to the end
-    assert playlist_model.playlist[1].id == 1, "Expected Song 1 to be at the end"
-
-
-def test_move_song_to_beginning(playlist_model, sample_playlist):
-    """Test moving a song to the beginning of the playlist.
+def test_get_fighting_skill(ring_model, sample_boxer1):
+    """Test getting the fighting skill of a boxer.
 
     """
-    playlist_model.playlist.extend(sample_playlist)
-
-    playlist_model.move_song_to_beginning(2)  # Move Song 2 to the beginning
-    assert playlist_model.playlist[0].id == 2, "Expected Song 2 to be at the beginning"
-
-
-##################################################
-# Song Retrieval Test Cases
-##################################################
-
-
-def test_get_song_by_track_number(playlist_model, sample_playlist):
-    """Test successfully retrieving a song from the playlist by track number.
-
-    """
-    playlist_model.playlist.extend(sample_playlist)
-
-    retrieved_song = playlist_model.get_song_by_track_number(1)
-    assert retrieved_song.id == 1
-    assert retrieved_song.title == 'Song 1'
-    assert retrieved_song.artist == 'Artist 1'
-    assert retrieved_song.year == 2022
-    assert retrieved_song.duration == 180
-    assert retrieved_song.genre == 'Pop'
-
-
-def test_get_all_songs(playlist_model, sample_playlist):
-    """Test successfully retrieving all songs from the playlist.
-
-    """
-    playlist_model.playlist.extend(sample_playlist)
-
-    all_songs = playlist_model.get_all_songs()
-    assert len(all_songs) == 2
-    assert all_songs[0].id == 1
-    assert all_songs[1].id == 2
-
-
-def test_get_song_by_song_id(playlist_model, sample_song1):
-    """Test successfully retrieving a song from the playlist by song ID.
-
-    """
-    playlist_model.playlist.append(sample_song1)
-
-    retrieved_song = playlist_model.get_song_by_song_id(1)
-
-    assert retrieved_song.id == 1
-    assert retrieved_song.title == 'Song 1'
-    assert retrieved_song.artist == 'Artist 1'
-    assert retrieved_song.year == 2022
-    assert retrieved_song.duration == 180
-    assert retrieved_song.genre == 'Pop'
-
-
-def test_get_current_song(playlist_model, sample_playlist):
-    """Test successfully retrieving the current song from the playlist.
-
-    """
-    playlist_model.playlist.extend(sample_playlist)
-
-    current_song = playlist_model.get_current_song()
-    assert current_song.id == 1
-    assert current_song.title == 'Song 1'
-    assert current_song.artist == 'Artist 1'
-    assert current_song.year == 2022
-    assert current_song.duration == 180
-    assert current_song.genre == 'Pop'
-
-
-def test_get_playlist_length(playlist_model, sample_playlist):
-    """Test getting the length of the playlist.
-
-    """
-    playlist_model.playlist.extend(sample_playlist)
-    assert playlist_model.get_playlist_length() == 2, "Expected playlist length to be 2"
-
-
-def test_get_playlist_duration(playlist_model, sample_playlist):
-    """Test getting the total duration of the playlist.
-
-    """
-    playlist_model.playlist.extend(sample_playlist)
-    assert playlist_model.get_playlist_duration() == 335, "Expected playlist duration to be 360 seconds"
+    assert ring_model.get_fighing_skill(sample_boxer1) == 1050.25, "Expected fighting skill to be 1050.25"
 
 
 ##################################################
@@ -236,184 +121,48 @@ def test_get_playlist_duration(playlist_model, sample_playlist):
 ##################################################
 
 
-def test_check_if_empty_non_empty_playlist(playlist_model, sample_song1):
-    """Test check_if_empty does not raise error if playlist is not empty.
+def test_check_if_empty_non_empty_ring(ring_model, sample_boxer1):
+    """Test check_if_empty does not raise error if ring is not empty.
 
     """
-    playlist_model.playlist.append(sample_song1)
+    ring_model.ring.append(sample_boxer1)
     try:
-        playlist_model.check_if_empty()
+        ring_model.check_if_empty()
     except ValueError:
-        pytest.fail("check_if_empty raised ValueError unexpectedly on non-empty playlist")
+        pytest.fail("check_if_empty raised ValueError unexpectedly on non-empty ring")
 
 
-def test_check_if_empty_empty_playlist(playlist_model):
-    """Test check_if_empty raises error when playlist is empty.
-
-    """
-    playlist_model.clear_playlist()
-    with pytest.raises(ValueError, match="Playlist is empty"):
-        playlist_model.check_if_empty()
-
-
-def test_validate_song_id(playlist_model, sample_song1):
-    """Test validate_song_id does not raise error for valid song ID.
+def test_check_if_empty_empty_ring(ring_model):
+    """Test check_if_empty raises error when ring is empty.
 
     """
-    playlist_model.playlist.append(sample_song1)
-    try:
-        playlist_model.validate_song_id(1)
-    except ValueError:
-        pytest.fail("validate_song_id raised ValueError unexpectedly for valid song ID")
-
-
-def test_validate_song_id_no_check_in_playlist(playlist_model):
-    """Test validate_song_id does not raise error for valid song ID when the id isn't in the playlist.
-
-    """
-    try:
-        playlist_model.validate_song_id(1, check_in_playlist=False)
-    except ValueError:
-        pytest.fail("validate_song_id raised ValueError unexpectedly for valid song ID")
-
-
-def test_validate_song_id_invalid_id(playlist_model):
-    """Test validate_song_id raises error for invalid song ID.
-
-    """
-    with pytest.raises(ValueError, match="Invalid song id: -1"):
-        playlist_model.validate_song_id(-1)
-
-    with pytest.raises(ValueError, match="Invalid song id: invalid"):
-        playlist_model.validate_song_id("invalid")
-
-
-def test_validate_song_id_not_in_playlist(playlist_model, sample_song1):
-    """Test validate_song_id raises error for song ID not in the playlist.
-
-    """
-    playlist_model.playlist.append(sample_song1)
-    with pytest.raises(ValueError, match="Song with id 2 not found in playlist"):
-        playlist_model.validate_song_id(2)
-
-
-def test_validate_track_number(playlist_model, sample_song1):
-    """Test validate_track_number does not raise error for valid track number.
-
-    """
-    playlist_model.playlist.append(sample_song1)
-    try:
-        playlist_model.validate_track_number(1)
-    except ValueError:
-        pytest.fail("validate_track_number raised ValueError unexpectedly for valid track number")
-
-
-def test_validate_track_number_invalid(playlist_model, sample_song1):
-    """Test validate_track_number raises error for invalid track number.
-
-    """
-    playlist_model.playlist.append(sample_song1)
-
-    with pytest.raises(ValueError, match="Invalid track number: 0"):
-        playlist_model.validate_track_number(0)
-
-    with pytest.raises(ValueError, match="Invalid track number: 2"):
-        playlist_model.validate_track_number(2)
-
-    with pytest.raises(ValueError, match="Invalid track number: invalid"):
-        playlist_model.validate_track_number("invalid")
-
+    ring_model.clear_ring()
+    with pytest.raises(ValueError, match="Ring is empty"):
+        ring_model.check_if_empty()
 
 ##################################################
-# Playback Test Cases
+# Fight Test Cases
 ##################################################
 
 
-def test_play_current_song(playlist_model, sample_playlist, mock_update_play_count):
-    """Test playing the current song.
+def test_fight_current_boxers(ring_model, sample_boxer1, sample_boxer2, mock_update_boxer_stats):
+    """Test fighting the current boxers.
 
     """
-    playlist_model.playlist.extend(sample_playlist)
+    ring_model.ring.append(sample_boxer1)
+    ring_model.ring.append(sample_boxer2)
 
-    playlist_model.play_current_song()
+    winner = ring_model.fight()
 
-    # Assert that CURRENT_TRACK_NUMBER has been updated to 2
-    assert playlist_model.current_track_number == 2, f"Expected track number to be 2, but got {playlist_model.current_track_number}"
+    # Assert that update_play_count was called with the id of the first boxer
+    mock_update_boxer_stats.assert_called_once_with(1)
 
-    # Assert that update_play_count was called with the id of the first song
-    mock_update_play_count.assert_called_once_with(1)
+    assert winner == "Boxer 2", f"expected Boxer 2 to win, but got {winner}"
 
-    # Get the second song from the iterator (which will increment CURRENT_TRACK_NUMBER back to 1)
-    playlist_model.play_current_song()
+    # Assert that update_play_count was called with the id of the second boxer
+    mock_update_boxer_stats.assert_called_with(2)
 
-    # Assert that CURRENT_TRACK_NUMBER has been updated back to 1
-    assert playlist_model.current_track_number == 1, f"Expected track number to be 1, but got {playlist_model.current_track_number}"
-
-    # Assert that update_play_count was called with the id of the second song
-    mock_update_play_count.assert_called_with(2)
-
-
-def test_rewind_playlist(playlist_model, sample_playlist):
-    """Test rewinding the iterator to the beginning of the playlist.
-
-    """
-    playlist_model.playlist.extend(sample_playlist)
-    playlist_model.current_track_number = 2
-
-    playlist_model.rewind_playlist()
-    assert playlist_model.current_track_number == 1, "Expected to rewind to the first track"
-
-
-def test_go_to_track_number(playlist_model, sample_playlist):
-    """Test moving the iterator to a specific track number in the playlist.
-
-    """
-    playlist_model.playlist.extend(sample_playlist)
-
-    playlist_model.go_to_track_number(2)
-    assert playlist_model.current_track_number == 2, "Expected to be at track 2 after moving song"
-
-
-def test_go_to_random_track(playlist_model, sample_playlist, mocker):
-    """Test that go_to_random_track sets a valid random track number.
-
-    """
-    playlist_model.playlist.extend(sample_playlist)
-
-    mocker.patch("playlist.models.playlist_model.get_random", return_value=2)
-
-    playlist_model.go_to_random_track()
-    assert playlist_model.current_track_number == 2, "Current track number should be set to the random value"
-
-
-def test_play_entire_playlist(playlist_model, sample_playlist, mock_update_play_count):
-    """Test playing the entire playlist.
-
-    """
-    playlist_model.playlist.extend(sample_playlist)
-
-    playlist_model.play_entire_playlist()
-
-    # Check that all play counts were updated
-    mock_update_play_count.assert_any_call(1)
-    mock_update_play_count.assert_any_call(2)
-    assert mock_update_play_count.call_count == len(playlist_model.playlist)
-
-    # Check that the current track number was updated back to the first song
-    assert playlist_model.current_track_number == 1, "Expected to loop back to the beginning of the playlist"
-
-
-def test_play_rest_of_playlist(playlist_model, sample_playlist, mock_update_play_count):
-    """Test playing from the current position to the end of the playlist.
-
-    """
-    playlist_model.playlist.extend(sample_playlist)
-    playlist_model.current_track_number = 2
-
-    playlist_model.play_rest_of_playlist()
-
-    # Check that play counts were updated for the remaining songs
-    mock_update_play_count.assert_any_call(2)
-    assert mock_update_play_count.call_count == 1
-
-    assert playlist_model.current_track_number == 1, "Expected to loop back to the beginning of the playlist"
+    assert sample_boxer1.wins == 0, f"Expected Boxer 1's wins to be 0, instead got {sample_boxer1.wins}"
+    assert sample_boxer1.losses == 1, f"Expected Boxer 1's losses to now be 1, instead got {sample_boxer1.losses}"
+    assert sample_boxer2.wins == 1, f"Expected Boxer 2's wins to now be 1, instead got {sample_boxer1.wins}"
+    assert sample_boxer2.losses == 0, f"Expected Boxer 2's losses to be 0, instead got {sample_boxer1.losses}"
