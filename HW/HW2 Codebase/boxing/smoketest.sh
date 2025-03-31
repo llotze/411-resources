@@ -138,6 +138,75 @@ get_boxer_by_name() {
 
 
 
+<<<<<<< HEAD
+=======
+############################################################
+#
+# Playlist Management
+#
+############################################################
+
+enter_ring() {
+  name=$1
+  weight=$2
+  height=$3
+  reach=$4
+  age=$5
+
+  echo "Adding boxer to ring: $name..."
+  response=$(curl -s -X POST "$BASE_URL/enter-ring" \
+    -H "Content-Type: application/json" \
+    -d "{\"name\":\"$name\", \"weight\":$weight, \"height\":$height, \"reach\":$reach, \"age\":$age}")
+
+  if echo "$response" | grep -q '"status": "success"'; then
+    echo "Boxer added to ring successfully."
+    if [ "$ECHO_JSON" = true ]; then
+      echo "Boxer JSON:"
+      echo "$response" | jq .
+    fi
+  else
+    echo "Failed to add boxer to ring."
+    exit 1
+  fi
+}
+
+clear_ring() {
+  echo "Clearing ring..."
+  response=$(curl -s -X POST "$BASE_URL/clear-ring")
+
+  if echo "$response" | grep -q '"status": "success"'; then
+    echo "Ring cleared successfully."
+  else
+    echo "Failed to clear ring."
+    exit 1
+  fi
+}
+
+
+
+
+
+############################################################
+#
+# Simulate Fight
+#
+############################################################
+
+fight() {
+  echo "Initiating fight..."
+  response=$(curl -s -X POST "$BASE_URL/fight")
+
+  if echo "$response" | grep -q '"status": "success"'; then
+    echo "Fight concluded successfully"
+  else
+    echo "Failed to process fight."
+    exit 1
+  fi
+}
+
+
+
+>>>>>>> 588a130 (Added clear ring, enter ring, and fight to smoketest.)
 ######################################################
 #
 # Leaderboard
