@@ -135,6 +135,43 @@ get_boxer_by_name() {
   fi
 }
 
+get_weight_class() {
+  weight=$1
+
+  echo "Getting weight class for (Weight: '$weight')..."
+  response=$(curl -s -X POST "$BASE_URL/get-weight-class/$weight")
+  echo "$response" | grep -q '"status": "success"'; then
+      echo "Weight class received successfully."
+      if [ "$ECHO_JSON" = true ]; then
+        echo "Boxer JSON:"
+        echo "$response" | jq .
+      fi
+    else
+      echo "Failed to find weight class."
+      exit 1
+    fi
+  }
+
+update_boxer_stats() {
+  boxer_id=$1
+  result=$2
+
+  echo "Updating boxer stats for (ID: '$boxer_id', result: '$result')..."
+  response=$(curl -s -X POST "$BASE_URL/update-boxer-stats" \
+    -H "Content-Type: application/json" \
+    -d "{\"boxer_id\": \"$boxer_id\", \"result\": \"$result}")
+  echo "$response" | grep -q '"status": "success"'; then
+      echo "Boxer stats updated successfully."
+      if [ "$ECHO_JSON" = true ]; then
+        echo "Boxer JSON:"
+        echo "$response" | jq .
+      fi
+    else
+      echo "Failed to update boxer stats."
+      exit 1
+    fi
+  }
+
 ############################################################
 #
 # Ring Management
