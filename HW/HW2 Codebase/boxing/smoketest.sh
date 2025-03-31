@@ -73,66 +73,64 @@ create_boxer() {
   fi
 }
 
-delete_song_by_id() {
-  song_id=$1
+delete_boxer_by_id() {
+  boxer_id=$1
 
-  echo "Deleting song by ID ($song_id)..."
-  response=$(curl -s -X DELETE "$BASE_URL/delete-song/$song_id")
+  echo "Deleting boxer by ID ($boxer_id)..."
+  response=$(curl -s -X DELETE "$BASE_URL/delete-boxer/$boxer_id")
   if echo "$response" | grep -q '"status": "success"'; then
-    echo "Song deleted successfully by ID ($song_id)."
+    echo "Boxer deleted successfully by ID ($boxer_id)."
   else
-    echo "Failed to delete song by ID ($song_id)."
+    echo "Failed to delete boxer by ID ($boxer_id)."
     exit 1
   fi
 }
 
-get_all_songs() {
-  echo "Getting all songs in the playlist..."
-  response=$(curl -s -X GET "$BASE_URL/get-all-songs-from-catalog")
+get_all_boxers() {
+  echo "Getting all boxers in the database..."
+  response=$(curl -s -X GET "$BASE_URL/get-all-boxers")
   if echo "$response" | grep -q '"status": "success"'; then
-    echo "All songs retrieved successfully."
+    echo "All boxers retrieved successfully."
     if [ "$ECHO_JSON" = true ]; then
-      echo "Songs JSON:"
+      echo "Boxers JSON:"
       echo "$response" | jq .
     fi
   else
-    echo "Failed to get songs."
+    echo "Failed to get boxers."
     exit 1
   fi
 }
 
-get_song_by_id() {
-  song_id=$1
+get_boxer_by_id() {
+  boxer_id=$1
 
-  echo "Getting song by ID ($song_id)..."
-  response=$(curl -s -X GET "$BASE_URL/get-song-from-catalog-by-id/$song_id")
+  echo "Getting boxer by ID ($boxer_id)..."
+  response=$(curl -s -X GET "$BASE_URL/get-boxer-by-id/$boxer_id")
   if echo "$response" | grep -q '"status": "success"'; then
-    echo "Song retrieved successfully by ID ($song_id)."
+    echo "Boxer retrieved successfully by ID ($boxer_id)."
     if [ "$ECHO_JSON" = true ]; then
-      echo "Song JSON (ID $song_id):"
+      echo "Boxer JSON (ID $boxer_id):"
       echo "$response" | jq .
     fi
   else
-    echo "Failed to get song by ID ($song_id)."
+    echo "Failed to get boxer by ID ($boxer_id)."
     exit 1
   fi
 }
 
-get_song_by_compound_key() {
-  artist=$1
-  title=$2
-  year=$3
+get_boxer_by_name() {
+  name=$1
 
   echo "Getting song by compound key (Artist: '$artist', Title: '$title', Year: $year)..."
-  response=$(curl -s -X GET "$BASE_URL/get-song-from-catalog-by-compound-key?artist=$(echo $artist | sed 's/ /%20/g')&title=$(echo $title | sed 's/ /%20/g')&year=$year")
+  response=$(curl -s -X GET "$BASE_URL/get-boxer-by-name?name=$(echo $name | sed 's/ /%20/g')")
   if echo "$response" | grep -q '"status": "success"'; then
-    echo "Song retrieved successfully by compound key."
+    echo "Boxer retrieved successfully by name."
     if [ "$ECHO_JSON" = true ]; then
-      echo "Song JSON (by compound key):"
+      echo "Boxer JSON (by name):"
       echo "$response" | jq .
     fi
   else
-    echo "Failed to get song by compound key."
+    echo "Failed to get boxer by name."
     exit 1
   fi
 }
@@ -140,81 +138,6 @@ get_song_by_compound_key() {
 
 
 
-############################################################
-#
-# Playlist Management
-#
-############################################################
-
-add_song_to_playlist() {
-  artist=$1
-  title=$2
-  year=$3
-
-  echo "Adding song to playlist: $artist - $title ($year)..."
-  response=$(curl -s -X POST "$BASE_URL/add-song-to-playlist" \
-    -H "Content-Type: application/json" \
-    -d "{\"artist\":\"$artist\", \"title\":\"$title\", \"year\":$year}")
-
-  if echo "$response" | grep -q '"status": "success"'; then
-    echo "Song added to playlist successfully."
-    if [ "$ECHO_JSON" = true ]; then
-      echo "Song JSON:"
-      echo "$response" | jq .
-    fi
-  else
-    echo "Failed to add song to playlist."
-    exit 1
-  fi
-}
-
-remove_song_from_playlist() {
-  artist=$1
-  title=$2
-  year=$3
-
-  echo "Removing song from playlist: $artist - $title ($year)..."
-  response=$(curl -s -X DELETE "$BASE_URL/remove-song-from-playlist" \
-    -H "Content-Type: application/json" \
-    -d "{\"artist\":\"$artist\", \"title\":\"$title\", \"year\":$year}")
-
-  if echo "$response" | grep -q '"status": "success"'; then
-    echo "Song removed from playlist successfully."
-    if [ "$ECHO_JSON" = true ]; then
-      echo "Song JSON:"
-      echo "$response" | jq .
-    fi
-  else
-    echo "Failed to remove song from playlist."
-    exit 1
-  fi
-}
-
-
-
-
-
-############################################################
-#
-# Play Playlist
-#
-############################################################
-
-
-
-
-go_to_track_number() {
-  track_number=$1
-  echo "Going to track number ($track_number)..."
-  response=$(curl -s -X POST "$BASE_URL/go-to-track-number/$track_number")
-
-  if echo "$response" | grep -q '"status": "success"'; then
-    echo "Moved to track number ($track_number) successfully."
-  else
-    echo "Failed to move to track number ($track_number)."
-    exit 1
-  fi
-}
 
 
 
