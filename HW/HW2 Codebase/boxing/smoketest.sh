@@ -54,15 +54,16 @@ check_db() {
 ##########################################################
 
 create_boxer() {
-  name=$1
-  weight=$2
-  height=$3
-  reach=$4
-  age=$5
+  id=$1
+  name=$2
+  weight=$3
+  height=$4
+  reach=$5
+  age=$6
 
   echo "Creating boxer: $name"
   response=$(curl -s -X POST "$BASE_URL/create-boxer" -H "Content-Type: application/json" \
-    -d "{\"name\": \"$name\", \"weight\": $weight, \"height\": $height, \"reach\": $reach, \"age\": $age}")
+    -d "{\"id\": \"$id\", \"name\": \"$name\", \"weight\": $weight, \"height\": $height, \"reach\": $reach, \"age\": $age}")
 
   if echo "$response" | grep -q '"status": "success"'; then
     echo "Boxer '$name' created."
@@ -73,7 +74,7 @@ create_boxer() {
   fi
 }
 
-delete_boxer_by_id() {
+delete_boxer() {
   boxer_id=$1
 
   echo "Deleting boxer by ID ($boxer_id)..."
@@ -179,16 +180,17 @@ update_boxer_stats() {
 ############################################################
 
 enter_ring() {
-  name=$1
-  weight=$2
-  height=$3
-  reach=$4
-  age=$5
+  id=$1
+  name=$2
+  weight=$3
+  height=$4
+  reach=$5
+  age=$6
 
   echo "Adding boxer to ring: $name..."
   response=$(curl -s -X POST "$BASE_URL/enter-ring" \
     -H "Content-Type: application/json" \
-    -d "{\"name\":\"$name\", \"weight\":$weight, \"height\":$height, \"reach\":$reach, \"age\":$age}")
+    -d "{\"id\": \"$id\", \"name\":\"$name\", \"weight\":$weight, \"height\":$height, \"reach\":$reach, \"age\":$age}")
 
   if echo "$response" | grep -q '"status": "success"'; then
     echo "Boxer added to ring successfully."
@@ -203,16 +205,17 @@ enter_ring() {
 }
 
 get_fighting_skill() {
-  name=$1
-  weight=$2
-  height=$3
-  reach=$4
-  age=$5
+  id=$1
+  name=$2
+  weight=$3
+  height=$4
+  reach=$5
+  age=$6
 
   echo "Getting fighting skill of boxer: $name..."
   response=$(curl -s -X POST "$BASE_URL/get-fighting-skill" \
     -H "Content-Type: application/json" \
-    -d "{\"name\":\"$name\", \"weight\":$weight, \"height\":$height, \"reach\":$reach, \"age\":$age}")
+    -d "{\"id\": \"$id\", \"name\":\"$name\", \"weight\":$weight, \"height\":$height, \"reach\":$reach, \"age\":$age}")
 
   if echo "$response" | grep -q '"status": "success"'; then
     echo "Received boxer's fighting skill successfully."
@@ -290,51 +293,41 @@ check_health
 check_db
 
 # Create songs
-create_song "The Beatles" "Hey Jude" 1968 "Rock" 180
-create_song "The Rolling Stones" "Paint It Black" 1966 "Rock" 180
-create_song "The Beatles" "Let It Be" 1970 "Rock" 180
-create_song "Queen" "Bohemian Rhapsody" 1975 "Rock" 180
-create_song "Led Zeppelin" "Stairway to Heaven" 1971 "Rock" 180
+create_boxer 1 "Bob" 150 60 12.5 87
+create_boxer 2 "Andre The Giant" 500 20 60.5 30
+create_boxer 3 "Greg the Smoker" 200 150 20.9 22
+create_boxer 4 "Jeb!" 130 92 87.4 70
+create_boxer 5 "Hulk Hogan" 240 200 40.6 44
 
-delete_song_by_id 1
-get_all_songs
+delete_boxer_by_id 1
 
-get_song_by_id 2
-get_song_by_compound_key "The Beatles" "Let It Be" 1970
-get_random_song
+get_boxer_by_id 2
 
-add_song_to_playlist "The Rolling Stones" "Paint It Black" 1966
-add_song_to_playlist "Queen" "Bohemian Rhapsody" 1975
-add_song_to_playlist "Led Zeppelin" "Stairway to Heaven" 1971
-add_song_to_playlist "The Beatles" "Let It Be" 1970
+get_boxer_by_name "Jeb!"
+get_boxer_by_name "Greg the Smoker"
 
-remove_song_from_playlist "The Beatles" "Let It Be" 1970
-remove_song_by_track_number 2
+get_weight_class 220
+get_weight_class 99999
+get_weight_class 126
 
-get_all_songs_from_playlist
-get_random_song_from_playlist
+update_boxer_stats 3 "win"
+update_boxer_stats 2 "loss"
 
-add_song_to_playlist "Queen" "Bohemian Rhapsody" 1975
-add_song_to_playlist "The Beatles" "Let It Be" 1970
+delete_boxer 5
 
-move_song_to_beginning "The Beatles" "Let It Be" 1970
-move_song_to_end "Queen" "Bohemian Rhapsody" 1975
-move_song_to_track_number "Led Zeppelin" "Stairway to Heaven" 1971 2
-swap_songs_in_playlist 1 2
+enter_ring 3 "Greg the Smoker" 200 150 20.9 22
+enter_ring 2 "Andre The Giant" 500 20 60.5 30
 
-get_all_songs_from_playlist
-get_song_from_playlist_by_track_number 1
+clear_ring
 
-get_playlist_length_duration
+enter_ring 3 "Greg the Smoker" 200 150 20.9 22
+enter_ring 2 "Andre The Giant" 500 20 60.5 30
 
-play_current_song
-rewind_playlist
+fight
 
-play_entire_playlist
-play_current_song
-go-go_to_random_track
-play_rest_of_playlist
+get_fighting_skill 2 "Andre The Giant" 500 20 60.5 30
+get_fighting_skill 3 "Greg the Smoker" 200 150 20.9 22
 
-get_song_leaderboard
+get_leaderboard
 
 echo "All tests passed successfully!"
