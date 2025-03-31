@@ -86,9 +86,9 @@ delete_boxer_by_id() {
   fi
 }
 
-get_all_boxers() {
+get_boxers() {
   echo "Getting all boxers in the database..."
-  response=$(curl -s -X GET "$BASE_URL/get-all-boxers")
+  response=$(curl -s -X GET "$BASE_URL/get-boxers")
   if echo "$response" | grep -q '"status": "success"'; then
     echo "All boxers retrieved successfully."
     if [ "$ECHO_JSON" = true ]; then
@@ -135,14 +135,9 @@ get_boxer_by_name() {
   fi
 }
 
-
-
-
-<<<<<<< HEAD
-=======
 ############################################################
 #
-# Playlist Management
+# Ring Management
 #
 ############################################################
 
@@ -166,6 +161,30 @@ enter_ring() {
     fi
   else
     echo "Failed to add boxer to ring."
+    exit 1
+  fi
+}
+
+get_fighting_skill() {
+  name=$1
+  weight=$2
+  height=$3
+  reach=$4
+  age=$5
+
+  echo "Getting fighting skill of boxer: $name..."
+  response=$(curl -s -X POST "$BASE_URL/get-fighting-skill" \
+    -H "Content-Type: application/json" \
+    -d "{\"name\":\"$name\", \"weight\":$weight, \"height\":$height, \"reach\":$reach, \"age\":$age}")
+
+  if echo "$response" | grep -q '"status": "success"'; then
+    echo "Received boxer's fighting skill successfully."
+    if [ "$ECHO_JSON" = true ]; then
+      echo "Boxer JSON:"
+      echo "$response" | jq .
+    fi
+  else
+    echo "Failed to get boxer's fighting skill."
     exit 1
   fi
 }
@@ -204,9 +223,6 @@ fight() {
   fi
 }
 
-
-
->>>>>>> 588a130 (Added clear ring, enter ring, and fight to smoketest.)
 ######################################################
 #
 # Leaderboard

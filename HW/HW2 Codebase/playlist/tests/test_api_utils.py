@@ -4,7 +4,7 @@ import requests
 from playlist.utils.api_utils import get_random
 
 
-RANDOM_NUMBER = 4
+RANDOM_NUMBER = 0.42
 
 
 @pytest.fixture
