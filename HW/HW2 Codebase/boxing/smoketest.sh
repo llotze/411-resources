@@ -53,7 +53,7 @@ check_db() {
 #
 ##########################################################
 
-create_song() {
+create_boxer() {
   name=$1
   weight=$2
   height=$3
@@ -137,20 +137,7 @@ get_song_by_compound_key() {
   fi
 }
 
-get_random_song() {
-  echo "Getting a random song from the catalog..."
-  response=$(curl -s -X GET "$BASE_URL/get-random-song")
-  if echo "$response" | grep -q '"status": "success"'; then
-    echo "Random song retrieved successfully."
-    if [ "$ECHO_JSON" = true ]; then
-      echo "Random Song JSON:"
-      echo "$response" | jq .
-    fi
-  else
-    echo "Failed to get a random song."
-    exit 1
-  fi
-}
+
 
 
 ############################################################
@@ -214,39 +201,6 @@ remove_song_from_playlist() {
 ############################################################
 
 
-
-get_all_songs_from_playlist() {
-  echo "Retrieving all songs from playlist..."
-  response=$(curl -s -X GET "$BASE_URL/get-all-songs-from-playlist")
-
-  if echo "$response" | grep -q '"status": "success"'; then
-    echo "All songs retrieved successfully."
-    if [ "$ECHO_JSON" = true ]; then
-      echo "Songs JSON:"
-      echo "$response" | jq .
-    fi
-  else
-    echo "Failed to retrieve all songs from playlist."
-    exit 1
-  fi
-}
-
-get_song_from_playlist_by_track_number() {
-  track_number=$1
-  echo "Retrieving song by track number ($track_number)..."
-  response=$(curl -s -X GET "$BASE_URL/get-song-from-playlist-by-track-number/$track_number")
-
-  if echo "$response" | grep -q '"status": "success"'; then
-    echo "Song retrieved successfully by track number."
-    if [ "$ECHO_JSON" = true ]; then
-      echo "Song JSON:"
-      echo "$response" | jq .
-    fi
-  else
-    echo "Failed to retrieve song by track number."
-    exit 1
-  fi
-}
 
 
 go_to_track_number() {
