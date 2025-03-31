@@ -19,14 +19,14 @@ def mock_update_boxer_stats(mocker):
 """Fixtures providing sample boxers for the tests."""
 @pytest.fixture
 def sample_boxer1():
-    return Boxer(1, 'Boxer 1', 150, 60, 12.5, 87)
+    return Boxer('Boxer 1', 150, 60, 12.5, 87)
 
 @pytest.fixture
 def sample_boxer2():
-    return Boxer(2, 'Boxer 2', 200, 100, 10.2, 5)
+    return Boxer('Boxer 2', 200, 100, 10.2, 5)
 
 def sample_boxer3():
-    return Boxer(3, 'Boxer 3', 300, 200, 4.1, 2)
+    return Boxer('Boxer 3', 300, 200, 4.1, 2)
 
 @pytest.fixture
 def sample_ring(sample_boxer1, sample_boxer2):
