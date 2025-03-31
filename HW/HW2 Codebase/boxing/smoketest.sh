@@ -266,18 +266,18 @@ fight() {
 #
 ######################################################
 
-# Function to get the song leaderboard sorted by play count
-get_song_leaderboard() {
-  echo "Getting song leaderboard sorted by play count..."
-  response=$(curl -s -X GET "$BASE_URL/song-leaderboard?sort=play_count")
+# Function to get the boxer leaderboard sorted by wins
+get_boxer_leaderboard() {
+  echo "Getting boxer leaderboard sorted by wins..."
+  response=$(curl -s -X GET "$BASE_URL/leaderboard?sort=wins")
   if echo "$response" | grep -q '"status": "success"'; then
-    echo "Song leaderboard retrieved successfully."
+    echo "Boxer leaderboard retrieved successfully."
     if [ "$ECHO_JSON" = true ]; then
-      echo "Leaderboard JSON (sorted by play count):"
+      echo "Leaderboard JSON (sorted by wins):"
       echo "$response" | jq .
     fi
   else
-    echo "Failed to get song leaderboard."
+    echo "Failed to get boxer leaderboard."
     exit 1
   fi
 }
