@@ -60,4 +60,3 @@ def test_get_random_invalid_response(mock_random_org):
 
     with pytest.raises(ValueError, match="Invalid response from random.org: invalid_response"):
         get_random()
-
