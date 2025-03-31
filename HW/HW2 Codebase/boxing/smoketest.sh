@@ -49,25 +49,26 @@ check_db() {
 
 ##########################################################
 #
-# Song Management
+# Boxer Management
 #
 ##########################################################
 
 create_song() {
-  artist=$1
-  title=$2
-  year=$3
-  genre=$4
-  duration=$5
+  name=$1
+  weight=$2
+  height=$3
+  reach=$4
+  age=$5
 
-  echo "Adding song ($artist - $title, $year) to the playlist..."
-  curl -s -X POST "$BASE_URL/create-song" -H "Content-Type: application/json" \
-    -d "{\"artist\":\"$artist\", \"title\":\"$title\", \"year\":$year, \"genre\":\"$genre\", \"duration\":$duration}" | grep -q '"status": "success"'
+  echo "Creating boxer: $name"
+  response=$(curl -s -X POST "$BASE_URL/create-boxer" -H "Content-Type: application/json" \
+    -d "{\"name\": \"$name\", \"weight\": $weight, \"height\": $height, \"reach\": $reach, \"age\": $age}")
 
-  if [ $? -eq 0 ]; then
-    echo "Song added successfully."
+  if echo "$response" | grep -q '"status": "success"'; then
+    echo "Boxer '$name' created."
   else
-    echo "Failed to add song."
+    echo "Failed to create boxer '$name'."
+    print_json "$response"
     exit 1
   fi
 }
@@ -202,31 +203,8 @@ remove_song_from_playlist() {
   fi
 }
 
-remove_song_by_track_number() {
-  track_number=$1
 
-  echo "Removing song by track number: $track_number..."
-  response=$(curl -s -X DELETE "$BASE_URL/remove-song-from-playlist-by-track-number/$track_number")
 
-  if echo "$response" | grep -q '"status":'; then
-    echo "Song removed from playlist by track number ($track_number) successfully."
-  else
-    echo "Failed to remove song from playlist by track number."
-    exit 1
-  fi
-}
-
-clear_playlist() {
-  echo "Clearing playlist..."
-  response=$(curl -s -X POST "$BASE_URL/clear-playlist")
-
-  if echo "$response" | grep -q '"status": "success"'; then
-    echo "Playlist cleared successfully."
-  else
-    echo "Failed to clear playlist."
-    exit 1
-  fi
-}
 
 
 ############################################################
@@ -235,29 +213,7 @@ clear_playlist() {
 #
 ############################################################
 
-play_current_song() {
-  echo "Playing current song..."
-  response=$(curl -s -X POST "$BASE_URL/play-current-song")
 
-  if echo "$response" | grep -q '"status": "success"'; then
-    echo "Current song is now playing."
-  else
-    echo "Failed to play current song."
-    exit 1
-  fi
-}
-
-rewind_playlist() {
-  echo "Rewinding playlist..."
-  response=$(curl -s -X POST "$BASE_URL/rewind-playlist")
-
-  if echo "$response" | grep -q '"status": "success"'; then
-    echo "Playlist rewound successfully."
-  else
-    echo "Failed to rewind playlist."
-    exit 1
-  fi
-}
 
 get_all_songs_from_playlist() {
   echo "Retrieving all songs from playlist..."
@@ -292,37 +248,6 @@ get_song_from_playlist_by_track_number() {
   fi
 }
 
-get_current_song() {
-  echo "Retrieving current song..."
-  response=$(curl -s -X GET "$BASE_URL/get-current-song")
-
-  if echo "$response" | grep -q '"status": "success"'; then
-    echo "Current song retrieved successfully."
-    if [ "$ECHO_JSON" = true ]; then
-      echo "Current Song JSON:"
-      echo "$response" | jq .
-    fi
-  else
-    echo "Failed to retrieve current song."
-    exit 1
-  fi
-}
-
-get_playlist_length_duration() {
-  echo "Retrieving playlist length and duration..."
-  response=$(curl -s -X GET "$BASE_URL/get-playlist-length-duration")
-
-  if echo "$response" | grep -q '"status": "success"'; then
-    echo "Playlist length and duration retrieved successfully."
-    if [ "$ECHO_JSON" = true ]; then
-      echo "Playlist Info JSON:"
-      echo "$response" | jq .
-    fi
-  else
-    echo "Failed to retrieve playlist length and duration."
-    exit 1
-  fi
-}
 
 go_to_track_number() {
   track_number=$1
@@ -337,118 +262,7 @@ go_to_track_number() {
   fi
 }
 
-go_to_random_track() {
-  echo "Going to a random track..."
-  response=$(curl -s -X POST "$BASE_URL/go-to-random-track")
 
-  if echo "$response" | grep -q '"status": "success"'; then
-    echo "Moved to a random track successfully."
-  else
-    echo "Failed to move to a random track."
-    exit 1
-  fi
-}
-
-play_entire_playlist() {
-  echo "Playing entire playlist..."
-  curl -s -X POST "$BASE_URL/play-entire-playlist" | grep -q '"status": "success"'
-  if [ $? -eq 0 ]; then
-    echo "Entire playlist played successfully."
-  else
-    echo "Failed to play entire playlist."
-    exit 1
-  fi
-}
-
-# Function to play the rest of the playlist
-play_rest_of_playlist() {
-  echo "Playing rest of the playlist..."
-  curl -s -X POST "$BASE_URL/play-rest-of-playlist" | grep -q '"status": "success"'
-  if [ $? -eq 0 ]; then
-    echo "Rest of playlist played successfully."
-  else
-    echo "Failed to play rest of playlist."
-    exit 1
-  fi
-}
-
-############################################################
-#
-# Arrange Playlist
-#
-############################################################
-
-move_song_to_beginning() {
-  artist=$1
-  title=$2
-  year=$3
-
-  echo "Moving song ($artist - $title, $year) to the beginning of the playlist..."
-  response=$(curl -s -X POST "$BASE_URL/move-song-to-beginning" \
-    -H "Content-Type: application/json" \
-    -d "{\"artist\": \"$artist\", \"title\": \"$title\", \"year\": $year}")
-
-  if echo "$response" | grep -q '"status": "success"'; then
-    echo "Song moved to the beginning successfully."
-  else
-    echo "Failed to move song to the beginning."
-    exit 1
-  fi
-}
-
-move_song_to_end() {
-  artist=$1
-  title=$2
-  year=$3
-
-  echo "Moving song ($artist - $title, $year) to the end of the playlist..."
-  response=$(curl -s -X POST "$BASE_URL/move-song-to-end" \
-    -H "Content-Type: application/json" \
-    -d "{\"artist\": \"$artist\", \"title\": \"$title\", \"year\": $year}")
-
-  if echo "$response" | grep -q '"status": "success"'; then
-    echo "Song moved to the end successfully."
-  else
-    echo "Failed to move song to the end."
-    exit 1
-  fi
-}
-
-move_song_to_track_number() {
-  artist=$1
-  title=$2
-  year=$3
-  track_number=$4
-
-  echo "Moving song ($artist - $title, $year) to track number ($track_number)..."
-  response=$(curl -s -X POST "$BASE_URL/move-song-to-track-number" \
-    -H "Content-Type: application/json" \
-    -d "{\"artist\": \"$artist\", \"title\": \"$title\", \"year\": $year, \"track_number\": $track_number}")
-
-  if echo "$response" | grep -q '"status": "success"'; then
-    echo "Song moved to track number ($track_number) successfully."
-  else
-    echo "Failed to move song to track number ($track_number)."
-    exit 1
-  fi
-}
-
-swap_songs_in_playlist() {
-  track_number1=$1
-  track_number2=$2
-
-  echo "Swapping songs at track numbers ($track_number1) and ($track_number2)..."
-  response=$(curl -s -X POST "$BASE_URL/swap-songs-in-playlist" \
-    -H "Content-Type: application/json" \
-    -d "{\"track_number_1\": $track_number1, \"track_number_2\": $track_number2}")
-
-  if echo "$response" | grep -q '"status": "success"'; then
-    echo "Songs swapped successfully between track numbers ($track_number1) and ($track_number2)."
-  else
-    echo "Failed to swap songs."
-    exit 1
-  fi
-}
 
 ######################################################
 #
