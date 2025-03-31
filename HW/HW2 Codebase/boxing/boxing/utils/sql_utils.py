@@ -15,7 +15,7 @@ DB_PATH = os.getenv("DB_PATH", "/app/sql/boxing.db")
 
 
 def check_database_connection():
-     """Check the database connection.
+    """Check the database connection.
 
     Raises:
         Exception: If the database connection is not OK.

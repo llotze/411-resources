@@ -61,12 +61,12 @@ class RingModel:
         else:
             winner = boxer_2
             loser = boxer_1
-        logger.info{f"Successfully simulated match. Winner - {winner.name} Loser - {loser.name}"}
+        logger.info(f"Successfully simulated match. Winner - {winner.name} Loser - {loser.name}")
         update_boxer_stats(winner.id, 'win')
         update_boxer_stats(loser.id, 'loss')
 
         self.clear_ring()
-        logger.info{f"Match between {boxer_1.name} and {boxer_2.name} has fully concluded"}
+        logger.info(f"Match between {boxer_1.name} and {boxer_2.name} has fully concluded")
         return winner.name
 
     def clear_ring(self):
@@ -108,8 +108,8 @@ class RingModel:
 
         if Ring[0].id == boxer.id:
             logger.error(f"boxer {boxer.name} is already in the ring, cannot add again.")
-            rasie ValueError(f"Boxer with id {boxer.id} already exists in the ring")
-            
+            raise ValueError(f"Boxer with id {boxer.id} already exists in the ring")
+
         self.ring.append(boxer)
         logger.info(f"Successfully added boxer {boxer.name} to the ring")
 
