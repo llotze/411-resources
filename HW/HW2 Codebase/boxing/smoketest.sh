@@ -54,16 +54,15 @@ check_db() {
 ##########################################################
 
 create_boxer() {
-  id=$1
-  name=$2
-  weight=$3
-  height=$4
-  reach=$5
-  age=$6
+  name=$1
+  weight=$2
+  height=$3
+  reach=$4
+  age=$5
 
   echo "Creating boxer: $name"
   response=$(curl -s -X POST "$BASE_URL/create-boxer" -H "Content-Type: application/json" \
-    -d "{\"id\": \"$id\", \"name\": \"$name\", \"weight\": $weight, \"height\": $height, \"reach\": $reach, \"age\": $age}")
+    -d "{\"name\": \"$name\", \"weight\": $weight, \"height\": $height, \"reach\": $reach, \"age\": $age}")
 
   if echo "$response" | grep -q '"status": "success"'; then
     echo "Boxer '$name' created."
@@ -180,17 +179,16 @@ update_boxer_stats() {
 ############################################################
 
 enter_ring() {
-  id=$1
-  name=$2
-  weight=$3
-  height=$4
-  reach=$5
-  age=$6
+  name=$1
+  weight=$2
+  height=$3
+  reach=$4
+  age=$5
 
   echo "Adding boxer to ring: $name..."
   response=$(curl -s -X POST "$BASE_URL/enter-ring" \
     -H "Content-Type: application/json" \
-    -d "{\"id\": \"$id\", \"name\":\"$name\", \"weight\":$weight, \"height\":$height, \"reach\":$reach, \"age\":$age}")
+    -d "{\"name\":\"$name\", \"weight\":$weight, \"height\":$height, \"reach\":$reach, \"age\":$age}")
 
   if echo "$response" | grep -q '"status": "success"'; then
     echo "Boxer added to ring successfully."
@@ -205,17 +203,16 @@ enter_ring() {
 }
 
 get_fighting_skill() {
-  id=$1
-  name=$2
-  weight=$3
-  height=$4
-  reach=$5
-  age=$6
+  name=$1
+  weight=$2
+  height=$3
+  reach=$4
+  age=$5
 
   echo "Getting fighting skill of boxer: $name..."
   response=$(curl -s -X POST "$BASE_URL/get-fighting-skill" \
     -H "Content-Type: application/json" \
-    -d "{\"id\": \"$id\", \"name\":\"$name\", \"weight\":$weight, \"height\":$height, \"reach\":$reach, \"age\":$age}")
+    -d "{\"name\":\"$name\", \"weight\":$weight, \"height\":$height, \"reach\":$reach, \"age\":$age}")
 
   if echo "$response" | grep -q '"status": "success"'; then
     echo "Received boxer's fighting skill successfully."
@@ -293,11 +290,11 @@ check_health
 check_db
 
 # Create songs
-create_boxer 1 "Bob" 150 60 12.5 87
-create_boxer 2 "Andre The Giant" 500 20 60.5 30
-create_boxer 3 "Greg the Smoker" 200 150 20.9 22
-create_boxer 4 "Jeb!" 130 92 87.4 70
-create_boxer 5 "Hulk Hogan" 240 200 40.6 44
+create_boxer "Bob" 150 60 12.5 87
+create_boxer "Andre The Giant" 500 20 60.5 30
+create_boxer "Greg the Smoker" 200 150 20.9 22
+create_boxer "Jeb!" 130 92 87.4 70
+create_boxer "Hulk Hogan" 240 200 40.6 44
 
 delete_boxer_by_id 1
 
