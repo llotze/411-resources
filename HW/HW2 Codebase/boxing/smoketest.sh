@@ -190,7 +190,7 @@ enter_ring() {
   echo "Adding boxer to ring: $name..."
   response=$(curl -s -X POST "$BASE_URL/enter-ring" \
     -H "Content-Type: application/json" \
-    -d "{\"name\":\"$name\", \"weight\":$weight, \"height\":$height, \"reach\":$reach, \"age\":$age}")
+    -d "{\"name\":\"$name\"}")
 
   if echo "$response" | grep -q '"status": "success"'; then
     echo "Boxer added to ring successfully."
@@ -200,6 +200,7 @@ enter_ring() {
     fi
   else
     echo "Failed to add boxer to ring."
+    echo "$response"
     exit 1
   fi
 }
@@ -316,9 +317,6 @@ enter_ring "Greg the Smoker"
 enter_ring "Andre The Giant"
 
 fight
-
-get_fighting_skill "Andre The Giant" 500 20 60.5 30
-get_fighting_skill "Greg the Smoker" 200 150 20.9 22
 
 get_leaderboard
 
