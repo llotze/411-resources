@@ -1,0 +1,192 @@
+(venv) llotze@LucasLaptop:/mnt/c/Users/lucas/OneDrive/Desktop/BU/spring_semester_2025/cs411/411-resources/hw/HW2 Codebase/boxing$ ./smoketest.sh --echo-json
+./smoketest.sh: line 289: sqlite3: command not found
+Checking health status...
+Service is healthy.
+Checking database connection...
+Database connection is healthy.
+Creating boxer: Bob
+Boxer 'Bob' created.
+Creating boxer: Andre The Giant
+Boxer 'Andre The Giant' created.
+Creating boxer: Greg the Smoker
+Boxer 'Greg the Smoker' created.
+Creating boxer: Jeb!
+Boxer 'Jeb!' created.
+Creating boxer: Hulk Hogan
+Boxer 'Hulk Hogan' created.
+Deleting boxer by ID (1)...
+Boxer deleted successfully by ID (1).
+Getting boxer by ID (2)...
+Boxer retrieved successfully by ID (2).
+Boxer JSON (ID 2):
+{
+  "boxer": {
+    "age": 30,
+    "height": 20.0,
+    "id": 2,
+    "name": "Andre The Giant",
+    "reach": 60.5,
+    "weight": 500.0,
+    "weight_class": "HEAVYWEIGHT"
+  },
+  "status": "success"
+}
+Getting boxer by name: 'Jeb!'...
+Boxer retrieved successfully by name.
+Boxer JSON (by name):
+{
+  "boxer": {
+    "age": 24,
+    "height": 92.0,
+    "id": 4,
+    "name": "Jeb!",
+    "reach": 87.4,
+    "weight": 130.0,
+    "weight_class": "FEATHERWEIGHT"
+  },
+  "status": "success"
+}
+Getting boxer by name: 'Greg the Smoker'...
+Boxer retrieved successfully by name.
+Boxer JSON (by name):
+{
+  "boxer": {
+    "age": 22,
+    "height": 150.0,
+    "id": 3,
+    "name": "Greg the Smoker",
+    "reach": 20.9,
+    "weight": 200.0,
+    "weight_class": "MIDDLEWEIGHT"
+  },
+  "status": "success"
+}
+Deleting boxer by ID (5)...
+Boxer deleted successfully by ID (5).
+Adding boxer to ring: Greg the Smoker...
+Boxer added to ring successfully.
+Boxer JSON:
+{
+  "boxers": [
+    {
+      "age": 22,
+      "height": 150.0,
+      "id": 3,
+      "name": "Greg the Smoker",
+      "reach": 20.9,
+      "weight": 200.0,
+      "weight_class": "MIDDLEWEIGHT"
+    }
+  ],
+  "message": "Boxer 'Greg the Smoker' is now in the ring.",
+  "status": "success"
+}
+Adding boxer to ring: Andre The Giant...
+Boxer added to ring successfully.
+Boxer JSON:
+{
+  "boxers": [
+    {
+      "age": 22,
+      "height": 150.0,
+      "id": 3,
+      "name": "Greg the Smoker",
+      "reach": 20.9,
+      "weight": 200.0,
+      "weight_class": "MIDDLEWEIGHT"
+    },
+    {
+      "age": 30,
+      "height": 20.0,
+      "id": 2,
+      "name": "Andre The Giant",
+      "reach": 60.5,
+      "weight": 500.0,
+      "weight_class": "HEAVYWEIGHT"
+    }
+  ],
+  "message": "Boxer 'Andre The Giant' is now in the ring.",
+  "status": "success"
+}
+Clearing ring...
+Ring cleared successfully.
+Adding boxer to ring: Greg the Smoker...
+Boxer added to ring successfully.
+Boxer JSON:
+{
+  "boxers": [
+    {
+      "age": 22,
+      "height": 150.0,
+      "id": 3,
+      "name": "Greg the Smoker",
+      "reach": 20.9,
+      "weight": 200.0,
+      "weight_class": "MIDDLEWEIGHT"
+    }
+  ],
+  "message": "Boxer 'Greg the Smoker' is now in the ring.",
+  "status": "success"
+}
+Adding boxer to ring: Andre The Giant...
+Boxer added to ring successfully.
+Boxer JSON:
+{
+  "boxers": [
+    {
+      "age": 22,
+      "height": 150.0,
+      "id": 3,
+      "name": "Greg the Smoker",
+      "reach": 20.9,
+      "weight": 200.0,
+      "weight_class": "MIDDLEWEIGHT"
+    },
+    {
+      "age": 30,
+      "height": 20.0,
+      "id": 2,
+      "name": "Andre The Giant",
+      "reach": 60.5,
+      "weight": 500.0,
+      "weight_class": "HEAVYWEIGHT"
+    }
+  ],
+  "message": "Boxer 'Andre The Giant' is now in the ring.",
+  "status": "success"
+}
+Initiating fight...
+Fight concluded successfully
+Getting boxer leaderboard sorted by wins...
+Boxer leaderboard retrieved successfully.
+Leaderboard JSON (sorted by wins):
+{
+  "leaderboard": [
+    {
+      "age": 22,
+      "fights": 1,
+      "height": 150.0,
+      "id": 3,
+      "name": "Greg the Smoker",
+      "reach": 20.9,
+      "weight": 200.0,
+      "weight_class": "MIDDLEWEIGHT",
+      "win_pct": 100.0,
+      "wins": 1
+    },
+    {
+      "age": 30,
+      "fights": 1,
+      "height": 20.0,
+      "id": 2,
+      "name": "Andre The Giant",
+      "reach": 60.5,
+      "weight": 500.0,
+      "weight_class": "HEAVYWEIGHT",
+      "win_pct": 0.0,
+      "wins": 0
+    }
+  ],
+  "status": "success"
+}
+All tests passed successfully!
