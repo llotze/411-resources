@@ -57,7 +57,7 @@ def test_create_boxer_success(mock_cursor):
     """Test creating a new boxer.
 
     """
-    create_boxer("Ali", 180, 72, 74.0, 30)
+    create_boxer("Ali", 180, 72, 74.4, 30)
 
     expected_query = normalize_whitespace("""
         INSERT INTO boxers (name, weight, height, reach, age)
@@ -99,7 +99,7 @@ def test_create_boxer_invalid_inputs():
         create_boxer("Ali", 180, 72, 74.0, 17)  # Invalid age
 
 
-def test_delete_song(mock_cursor):
+def test_delete_boxer(mock_cursor):
     """Test deleting a boxer from the catalog by boxer ID.
 
     """
@@ -154,7 +154,7 @@ def test_get_boxer_by_id_success(mock_cursor):
 
     result = get_boxer_by_id(1)
     assert result == Boxer(id=1, name="Ali", weight=180, height=72, reach=74.0, age=30)
-    assert result.weight_class == "LIGHTWEIGHT"
+    assert result.weight_class == "MIDDLEWEIGHT"
 
     expected_query = normalize_whitespace("SELECT id, name, weight, height, reach, age FROM boxers WHERE id = ?")
     actual_query = normalize_whitespace(mock_cursor.execute.call_args[0][0])
@@ -263,8 +263,8 @@ def test_get_boxers_ordered_by_win_pct(mock_cursor):
 
     """
     mock_cursor.fetchall.return_value = [
-        (2, "Tyson", 220, 70, 76.0, 28, 8, 7, 0.875),
         (1, "Ali", 180, 72, 74.0, 30, 10, 9, 0.9),
+        (2, "Tyson", 220, 70, 76.0, 28, 8, 7, 0.875),
         (3, "Holyfield", 200, 74, 78.0, 32, 9, 5, 0.555)
     ]
 
