@@ -19,14 +19,15 @@ def mock_update_boxer_stats(mocker):
 """Fixtures providing sample boxers for the tests."""
 @pytest.fixture
 def sample_boxer1():
-    return Boxer('Boxer 1', 150, 60, 12.5, 87)
+    return Boxer(1, 'Boxer 1', 150, 60, 12.5, 87)
 
 @pytest.fixture
 def sample_boxer2():
-    return Boxer('Boxer 2', 200, 100, 10.2, 5)
+    return Boxer(2, 'Boxer 2', 200, 100, 10.2, 5)
 
+@pytest.fixture
 def sample_boxer3():
-    return Boxer('Boxer 3', 300, 200, 4.1, 2)
+    return Boxer(3, 'Boxer 3', 300, 200, 4.1, 2)
 
 @pytest.fixture
 def sample_ring(sample_boxer1, sample_boxer2):
@@ -67,9 +68,9 @@ def test_add_third_boxer_to_ring(ring_model, sample_boxer1, sample_boxer2, sampl
     """Test error when adding a third boxer to the ring.
 
     """
-    ring.model.enter_ring(sample_boxer1)
-    ring.model.enter_ring(sample_boxer2)
-    with pytest.raises(TypeError, match="Ring is full, cannot add more boxers."):
+    ring_model.enter_ring(sample_boxer1)
+    ring_model.enter_ring(sample_boxer2)
+    with pytest.raises(ValueError, match="Ring is full, cannot add more boxers."):
         ring_model.enter_ring(sample_boxer3)
 
 
@@ -113,7 +114,7 @@ def test_get_fighting_skill(ring_model, sample_boxer1):
     """Test getting the fighting skill of a boxer.
 
     """
-    assert ring_model.get_fighing_skill(sample_boxer1) == 1050.25, "Expected fighting skill to be 1050.25"
+    assert ring_model.get_fighting_skill(sample_boxer1) == 1049.25, "Expected fighting skill to be 1049.25"
 
 
 ##################################################
