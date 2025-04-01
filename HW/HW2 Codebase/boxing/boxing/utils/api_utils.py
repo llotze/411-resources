@@ -24,7 +24,7 @@ def get_random() -> float:
         RuntimeError: If the request to random.org fails or times out.
         ValueError: If the response from random.org is not a valid float.
     """
-    url = RANDOM_ORG_BASE_URL
+    url = RANDOM_ORG_URL
 
     try:
         logger.info(f"Fetching random decimal from {url}")

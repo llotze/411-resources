@@ -100,7 +100,7 @@ class RingModel:
         logger.info("Received request to add a boxer to the ring")
         if not isinstance(boxer, Boxer):
             logger.error("Invalid type: boxer is not a valid Boxer instance")
-            raise TypeError(f"Invalid type: Expected 'Boxer', got '{type(boxer).__name__}'")
+            raise TypeError(f"Invalid type: Expected 'Boxer'")
 
         if len(self.ring) >= 2:
             logger.error(f"Could not add boxer {boxer.name} to the ring, ring is already full")
@@ -108,7 +108,12 @@ class RingModel:
         if len(self.ring) > 0:
             if self.ring[0].id == boxer.id:
                 logger.error(f"boxer {boxer.name} is already in the ring, cannot add again.")
-                raise ValueError(f"Boxer with id {boxer.id} already exists in the ring")
+                raise ValueError(f"Boxer with ID {boxer.id} already exists in the ring")
+            if len(self.ring) > 1:
+                if self.ring[1].id == boxer.id:
+                    logger.error(f"boxer {boxer.name} is already in the ring, cannot add again.")
+                    raise ValueError(f"Boxer with ID {boxer.id} already exists in the ring")
+
 
         self.ring.append(boxer)
         logger.info(f"Successfully added boxer {boxer.name} to the ring")
