@@ -229,9 +229,9 @@ get_fighting_skill() {
   fi
 }
 
-clear_ring() {
+clear_boxers() {
   echo "Clearing ring..."
-  response=$(curl -s -X POST "$BASE_URL/clear-ring")
+  response=$(curl -s -X POST "$BASE_URL/clear-boxers")
 
   if echo "$response" | grep -q '"status": "success"'; then
     echo "Ring cleared successfully."
@@ -253,7 +253,7 @@ clear_ring() {
 
 fight() {
   echo "Initiating fight..."
-  response=$(curl -s -X POST "$BASE_URL/fight")
+  response=$(curl -s -X GET "$BASE_URL/fight")
 
   if echo "$response" | grep -q '"status": "success"'; then
     echo "Fight concluded successfully"
@@ -311,13 +311,13 @@ delete_boxer 5
 enter_ring "Greg the Smoker"
 enter_ring "Andre The Giant"
 
-clear_ring
+clear_boxers
 
 enter_ring "Greg the Smoker"
 enter_ring "Andre The Giant"
 
 fight
 
-get_leaderboard
+get_boxer_leaderboard
 
 echo "All tests passed successfully!"
