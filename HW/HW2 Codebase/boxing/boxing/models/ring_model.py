@@ -54,7 +54,7 @@ class RingModel:
         normalized_delta = 1 / (1 + math.e ** (-delta))
 
         random_number = get_random()
-
+        
         if random_number < normalized_delta:
             winner = boxer_1
             loser = boxer_2

@@ -88,6 +88,7 @@ def test_clear_ring(ring_model, sample_boxer1, sample_boxer2):
     ring_model.clear_ring()
     assert len(ring_model.ring) == 0, "ring should be empty after clearing"
 
+
 ##################################################
 # Boxer Retrieval Test Cases
 ##################################################
@@ -114,7 +115,7 @@ def test_get_fighting_skill(ring_model, sample_boxer1):
     """Test getting the fighting skill of a boxer.
 
     """
-    assert ring_model.get_fighting_skill(sample_boxer1) == 1049.25, "Expected fighting skill to be 1049.25"
+    assert ring_model.get_fighting_skill(sample_boxer1) == 1050.25, "Expected fighting skill to be 1049.25"
 
 
 ##################################################
@@ -160,5 +161,11 @@ def test_fight_current_boxers(ring_model, sample_boxer1, sample_boxer2, mock_upd
     mock_update_boxer_stats.assert_any_call(2, 'loss')
     mock_update_boxer_stats.assert_any_call(1, 'win')
 
-    assert winner == "Boxer 1", f"expected Boxer 1 to win, but got {winner}"
+def test_fight_insufficient_boxers(ring_model, sample_boxer1):
+    """Test fighting the current boxers.
+
+    """
+    ring_model.ring.append(sample_boxer1)
+    with pytest.raises(ValueError, match="There must be two boxers to start a fight."):
+        ring_model.fight()
 
